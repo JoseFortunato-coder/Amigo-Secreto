@@ -1,26 +1,57 @@
-const amigos = [];
-let nomes;
-let listaAmigos;
+let amigos = [];
+
 function aleatorizarArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
     }
 }
+
 function adicionar() {
- nomes = document.getElementById("nome-amigo").value; 
-  amigos.push(nomes);
-   listaAmigos = document.getElementById('lista-amigos').textContent = amigos.join(", \n"); 
-  document.getElementById("nome-amigo").value = "";
+    let input = document.getElementById("nome-amigo");
+    let nome = input.value;
+
+    if (nome.trim() === "") {
+        return;
+    }
+
+    amigos.push(nome);
+    document.getElementById('lista-amigos').innerHTML = amigos.join("<br>");
+    input.value = "";
 }
 
 function sortear() {
-    document.getElementById("nome-amigo").value = "";
-    document.getElementById("lista-amigos").value = "";
-    aleatorizarArray(amigos);
-    listaAmigos = document.getElementById('lista-sorteio').textContent = amigos - amigos - 1; 
+    if (amigos.length < 2) {
+        alert("Adicione pelo menos 2 participantes para sortear!");
+        return;
+    }
+
+    let sorteados = [...amigos];
+    let valido = false;
+
+    while (!valido) {
+        aleatorizarArray(sorteados);
+        valido = true;
+        for (let i = 0; i < amigos.length; i++) {
+            if (amigos[i] === sorteados[i]) {
+                valido = false;
+                break;
+            }
+        }
+    }
+
+    let resultadoHTML = `<strong>Participantes do Sorteio:</strong>${amigos}<br>`;
+
+    for (let i = 0; i < amigos.length; i++) {
+        resultadoHTML += `O amigo secreto de <strong>${amigos[i]}</strong> é <strong>${sorteados[i]}</strong><br>`;
+    }
+
+    document.getElementById('lista-sorteio').innerHTML = resultadoHTML;
 }
 
-function reiniciar(event) {
- 
+function reiniciar() {
+    amigos = [];
+    document.getElementById('lista-amigos').innerHTML = "";
+    document.getElementById('lista-sorteio').innerHTML = "";
+    document.getElementById('nome-amigo').value = "";
 }
